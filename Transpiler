@@ -1,0 +1,58 @@
+    private static IEnumerable<CodeInstruction> PopupHolyOrder_setTo_Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        {
+            List<CodeInstruction> instructionList = codeInstructions.ToList();
+ 
+            MethodInfo MI_TranspilerBody_DisplayInfluenceElder = AccessTools.Method(typeof(HarmonyPatches), nameof(PopupHolyOrder_setTo_TranspilerBody_DisplayInfluenceElder));
+            MethodInfo MI_TranspilerBody_DisplayInfluenceHuman = AccessTools.Method(typeof(HarmonyPatches), nameof(PopupHolyOrder_setTo_TranspilerBody_DisplayInfluenceHuman));
+            MethodInfo MI_TranspilerBody_InfluenceStats = AccessTools.Method(typeof(HarmonyPatches), nameof(PopupHolyOrder_setTo_TranspilerBody_InfluenceStats));
+ 
+            // Influence Dark and Influence Good Summaries
+            FieldInfo FI_PopupHolyOrder_influenceDark = AccessTools.Field(typeof(PopupHolyOrder), nameof(PopupHolyOrder.influenceDark));
+            FieldInfo FI_PopupHolyOrder_influenceDarkp0 = AccessTools.Field(typeof(PopupHolyOrder), nameof(PopupHolyOrder.influenceDarkp0));
+            FieldInfo FI_PopupHolyOrder_influenceGood = AccessTools.Field(typeof(PopupHolyOrder), nameof(PopupHolyOrder.influenceGood));
+            FieldInfo FI_PopupHolyOrder_influenceGoodp0 = AccessTools.Field(typeof(PopupHolyOrder), nameof(PopupHolyOrder.influenceGoodp0));
+            // Influence Dark and Influence Good Stats
+            FieldInfo FI_PopupHolyOrder_influenceDarkStats = AccessTools.Field(typeof(PopupHolyOrder), nameof(PopupHolyOrder.influenceDarkStats));
+            FieldInfo FI_PopupHolyOrder_influenceGoodStats = AccessTools.Field(typeof(PopupHolyOrder), nameof(PopupHolyOrder.influenceGoodStats));
+ 
+ 
+            (int, int)[] rangesDisplayInf = new (int, int)[5];
+ 
+            int findIndex = -1;
+ 
+            // For loop to gather all target indexes and ranges
+            for (int i = 0; i < instructionList.Count; i++)
+            {
+                if (findIndex == -1 && instructionList[i].opcode == OpCodes.Ldfld)
+                {
+                    switch (instructionList[i].operand)
+                    {
+                        case FieldInfo fi when fi == FI_PopupHolyOrder_influenceDark:
+                            rangesDisplayInf[0] = (i, 0);
+                            findIndex = 0;
+                            Console.WriteLine("CommunityLib: Found transpiler target " + findIndex + " at Index " + i);
+                            break;
+                        case FieldInfo fi when fi == FI_PopupHolyOrder_influenceGood:
+                            rangesDisplayInf[1] = (i, 0);
+                            findIndex = 1;
+                            Console.WriteLine("CommunityLib: Found transpiler target " + findIndex + " at Index " + i);
+                            break;
+                        case FieldInfo fi when fi == FI_PopupHolyOrder_influenceDarkp0:
+                            rangesDisplayInf[2] = (i, 0);
+                            findIndex = 2;
+                            Console.WriteLine("CommunityLib: Found transpiler target " + findIndex + " at Index " + i);
+                            break;
+                        case FieldInfo fi when fi == FI_PopupHolyOrder_influenceGoodp0:
+                            rangesDisplayInf[3] = (i, 0);
+                            findIndex = 3;
+                            Console.WriteLine("CommunityLib: Found transpiler target " + findIndex + " at Index " + i);
+                            break;
+                        case FieldInfo fi when fi == FI_PopupHolyOrder_influenceDarkStats:
+                            rangesDisplayInf[4] = (i, 0);
+                            findIndex = 4;
+                            Console.WriteLine("CommunityLib: Found transpiler target " + findIndex + " at Index " + i);
+                            break;
+                        default:
+                            break;
+                    }
+                }
